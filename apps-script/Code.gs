@@ -1,8 +1,12 @@
 /**
- * МТ-7 · Үнэлгээний апп — Google Sheets backend
+ * МТ · Үнэлгээний апп — Google Sheets backend
  * Энэ кодыг Google Sheets → Extensions → Apps Script дотор бүхэлд нь хуулж тавина.
  * Дараа нь Deploy → New deployment → Web app (Execute as: Me, Who has access: Anyone).
  */
+
+// Скриптийг хүснэгтээс (Extensions → Apps Script) нээсэн бол хоосон үлдээнэ.
+// Тусдаа (standalone) скрипт бол хүснэгтийн ID-г энд бичнэ: docs.google.com/spreadsheets/d/<ID>/edit
+const SHEET_ID = "";
 
 const PEER_SHEET = "Найзын үнэлгээ";
 const QUIZ_SHEET = "Бататгах асуулт";
@@ -20,7 +24,7 @@ const QUIZ_TITLES = ["Огноо", "Анги", "Сурагч", "Асуулт 1 �
   "Асуулт 3 хариулт", "А3 зөв", "Асуулт 4 хариулт", "А4 зөв", "Оноо (4)"];
 
 function sheet_(name, titles) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(name);
   if (!sh) {
     sh = ss.insertSheet(name);
@@ -96,5 +100,5 @@ function doGet(e) {
       quiz: rows_(QUIZ_SHEET, QUIZ_TITLES, QUIZ_HEADERS)
     });
   }
-  return json_({ ok: true, message: "МТ-7 үнэлгээний сервер ажиллаж байна" });
+  return json_({ ok: true, message: "МТ үнэлгээний сервер ажиллаж байна" });
 }

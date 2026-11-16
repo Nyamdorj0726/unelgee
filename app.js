@@ -77,8 +77,18 @@
     clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), ms || 2600);
   }
 
+  const ONE_CLASS = !(CFG.CLASSES && CFG.CLASSES.length > 1);
+  function classField(id, sel) {
+    if (ONE_CLASS) {
+      const c = (CFG.CLASSES && CFG.CLASSES[0]) || "7-р анги";
+      return `<input type="hidden" id="${id}" value="${esc(c)}">`;
+    }
+    return `<label class="field"><span>Анги</span><select class="select" id="${id}">${classOptions(sel)}</select></label>`;
+  }
+  const rowCls = () => ONE_CLASS ? "" : "row2";
+
   function classOptions(sel) {
-    const list = CFG.CLASSES && CFG.CLASSES.length ? CFG.CLASSES : ["7а"];
+    const list = CFG.CLASSES && CFG.CLASSES.length ? CFG.CLASSES : ["7-р анги"];
     return list.map(c => `<option value="${esc(c)}" ${c === sel ? "selected" : ""}>${esc(c)}</option>`).join("");
   }
 
@@ -160,7 +170,7 @@
     app.className = "container";
     app.innerHTML = `
       <section class="hero">
-        <div class="kicker">Мэдээллийн технологи · 7-р анги</div>
+        <div class="kicker">Мэдээллийн технологи</div>
         <h1>Мэдээлэл хадгалах төхөөрөмж</h1>
         <p class="lead">Найзынхаа ажлыг үнэлж, бататгах асуултад хариулаарай 🚀</p>
       </section>
@@ -195,10 +205,10 @@
       <div class="card">
         <label class="field"><span>Таны нэр (үнэлж буй)</span>
           <input class="input" id="evaluator" autocomplete="off" placeholder="Жишээ: Бат" value="${esc(me.name || "")}"></label>
-        <div class="row2">
+        <div class="${rowCls()}">
           <label class="field"><span>Найзын нэр (үнэлүүлж буй)</span>
             <input class="input" id="student" autocomplete="off" placeholder="Жишээ: Сараа"></label>
-          <label class="field"><span>Анги</span><select class="select" id="cls">${classOptions(me.cls)}</select></label>
+          ${classField("cls", me.cls)}
         </div>
       </div>
       ${TASKS.map(t => `
@@ -303,10 +313,10 @@
       <h1>4 асуулт · 4 оноо</h1>
       <p class="lead">Хариултаа сонгоход зөв, бурууг шууд харуулна. Анхны оролдлогын оноо тооцогдоно.</p>
       <div class="card">
-        <div class="row2">
+        <div class="${rowCls()}">
           <label class="field"><span>Таны нэр</span>
             <input class="input" id="qname" autocomplete="off" placeholder="Жишээ: Бат" value="${esc(me.name || "")}"></label>
-          <label class="field"><span>Анги</span><select class="select" id="qcls">${classOptions(me.cls)}</select></label>
+          ${classField("qcls", me.cls)}
         </div>
         <div class="btn-row"><button class="btn block" id="qgo">Эхлэх ▶</button></div>
       </div>`;
@@ -511,7 +521,6 @@
     else if (h === "board") viewBoard();
     else viewHome();
   }
-  if (DEMO) document.getElementById("modeBadge").hidden = false;
   window.addEventListener("hashchange", route);
   route();
 })();
